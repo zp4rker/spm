@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/zp4rker/jpm/internal/wrapper"
 	"os"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
@@ -16,6 +18,15 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	sigchan := make(chan os.Signal)
+	signal.Notify(sigchan, syscall.Signal(0x1f))
+
+	go func() {
+		for range sigchan {
+			fmt.Println("Recieved Signal(0x1f)")
+		}
+	}()
 
 	// start go routines here
 

@@ -4,5 +4,5 @@
 *.iml
 
 jpm
-jpm_controller
-jpm_wrapper
+jpm-controller
+jpm-wrapper

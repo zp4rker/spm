@@ -1,7 +1,7 @@
 //go:build clean
 
-//go:generate rm -rf jpm
-//go:generate rm -rf jpm-controller
-//go:generate rm -rf jpm-wrapper
+//go:generate rm -rf spm
+//go:generate rm -rf spm-controller
+//go:generate rm -rf spm-wrapper
 
 package build

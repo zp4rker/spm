@@ -1,1 +1,1 @@
-# JPM: **J**ava **P**rocess **M**anager
+# SPM: **S**imple **P**rocess **M**anager

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/zp4rker/jpm/internal/wrapper"
+	"github.com/zp4rker/jpm/internal/core"
 	"os"
 	"os/signal"
 	"syscall"
@@ -14,7 +14,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	proc, err := wrapper.NewWrapper(os.Args[1])
+	wrapper, err := core.NewWrapper(os.Args[1])
 	if err != nil {
 		panic(err)
 	}
@@ -30,7 +30,7 @@ func main() {
 
 	// start go routines here
 
-	err = proc.Run()
+	err = wrapper.Run()
 	if err != nil {
 		panic(err)
 	}

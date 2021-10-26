@@ -1,4 +1,4 @@
-package wrapper
+package core
 
 import (
 	"errors"
@@ -42,17 +42,17 @@ type Wrapper struct {
 	stdout, stderr io.ReadCloser
 }
 
-func (wrapper *Wrapper) Run() error {
-	return wrapper.cmd.Run()
+func (w *Wrapper) Run() error {
+	return w.cmd.Run()
 }
 
-func (wrapper *Wrapper) WriteStdin(input string) error {
-	_, err := wrapper.stdin.Write([]byte(input))
+func (w *Wrapper) WriteStdin(input string) error {
+	_, err := w.stdin.Write([]byte(input))
 	return err
 }
 
-func (wrapper *Wrapper) ReadStdout() (string, error) {
-	bytes, err := io.ReadAll(wrapper.stdout)
+func (w *Wrapper) ReadStdout() (string, error) {
+	bytes, err := io.ReadAll(w.stdout)
 	if err != nil {
 		return "", nil
 	}
@@ -60,8 +60,8 @@ func (wrapper *Wrapper) ReadStdout() (string, error) {
 	return string(bytes), nil
 }
 
-func (wrapper *Wrapper) ReadSterr() (string, error) {
-	bytes, err := io.ReadAll(wrapper.stderr)
+func (w *Wrapper) ReadSterr() (string, error) {
+	bytes, err := io.ReadAll(w.stderr)
 	if err != nil {
 		return "", nil
 	}

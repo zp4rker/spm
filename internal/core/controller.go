@@ -1,15 +1,12 @@
 package core
 
 import (
+	"fmt"
 	"net"
 	"os"
 )
 
 const SockAddr = "/tmp/spm/controller.sock"
-
-func NewController() (*Controller, error) {
-	return &Controller{}, nil
-}
 
 type Controller struct {
 	procs []Proc
@@ -17,19 +14,32 @@ type Controller struct {
 }
 
 type Proc struct {
+	Pid int
+	Conn net.Conn
 	// TODO: Implement Proc struct
 }
 
-func (c *Controller) LaunchProc() {
-	// TODO: Implement process launching
+func (c *Controller) LaunchProc(cmdString string) error {
+	cmdString = fmt.Sprintf("spm-wrapper '%v'", cmdString)
+	cmd, err := CmdFromString(cmdString)
+	if err != nil {
+		return err
+	}
+
+	return cmd.Run()
 }
 
-func (c *Controller) SignalProc(proc Proc, signal os.Signal) {
-	// TODO: Implement process signalling
+func (c *Controller) SignalProc(pid int, signal os.Signal) error {
+	osProc, err := os.FindProcess(pid)
+	if err != nil {
+		return err
+	}
+
+	return osProc.Signal(signal)
 }
 
-func (c *Controller) ReattachProc(pid int) {
-	// TODO: Implement process reattaching
+func (c *Controller) ReattachProc(pid int) error {
+	return c.SignalProc(pid, SIGRQFB)
 }
 
 func (c *Controller) ProcList() *[]Proc {

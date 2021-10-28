@@ -1,4 +1,4 @@
-package core
+package spm
 
 import (
 	"errors"
@@ -44,6 +44,14 @@ type Wrapper struct {
 
 func (w *Wrapper) Run() error {
 	return w.cmd.Run()
+}
+
+func (w *Wrapper) Start() error {
+	return w.cmd.Start()
+}
+
+func (w *Wrapper) Wait() error {
+	return w.cmd.Wait()
 }
 
 func (w *Wrapper) WriteStdin(input string) error {

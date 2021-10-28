@@ -3,6 +3,10 @@
 .idea/
 *.iml
 
-jpm
-jpm-controller
-jpm-wrapper
+spm
+spm-controller
+spm-wrapper
+
+!spm/
+!spm-controller/
+!spm-wrapper/

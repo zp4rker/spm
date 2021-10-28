@@ -1,4 +1,4 @@
-package core
+package spm
 
 import (
 	"github.com/google/shlex"

@@ -1,5 +1,6 @@
 .DS_Store
 
+.vscode/
 .idea/
 *.iml
 
@@ -10,3 +11,5 @@ spm-wrapper
 !spm/
 !spm-controller/
 !spm-wrapper/
+
+pkg.sh

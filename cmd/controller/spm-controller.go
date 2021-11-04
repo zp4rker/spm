@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/zp4rker/jpm/internal/spm"
 )
 
@@ -13,5 +14,8 @@ func main() {
 	}
 
 	fmt.Println("Starting controller...")
-	controller.Start()
+	defer controller.CloseSock()
+	if err := controller.Start(); err != nil {
+		fmt.Printf("Exited with error %v\n", err)
+	}
 }

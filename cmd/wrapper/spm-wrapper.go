@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/zp4rker/jpm/internal/spm"
 	"net"
 	"os"
 	"os/signal"
+
+	"github.com/zp4rker/jpm/internal/spm"
 )
 
 func main() {
@@ -32,18 +33,17 @@ func main() {
 		}
 	}()
 
-	go func() {
-		conn, err := net.Dial("unix", spm.SockAddr)
-		if err != nil {
-			return
-		}
+	conn, err := net.Dial("unix", spm.SockAddr)
+	if err != nil {
+		return
+	}
+	defer conn.Write([]byte("TERMINATED\n"))
 
-		_, _ = conn.Write([]byte(fmt.Sprintf("/register %v\n", os.Getpid())))
-	}()
+	_, _ = conn.Write([]byte(fmt.Sprintf("/register %v\n", os.Getpid())))
 
 	// start go routines here
 
 	if err = wrapper.Wait(); err != nil {
-		panic(err)
+		fmt.Printf("Exited with error %v\n", err)
 	}
 }

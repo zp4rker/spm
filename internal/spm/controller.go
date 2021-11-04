@@ -3,22 +3,24 @@ package spm
 import (
 	"bufio"
 	"fmt"
-	"github.com/zp4rker/jpm/internal/spm/sock_api"
 	"net"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/zp4rker/jpm/internal/spm/sock_api"
 )
 
 const SockAddr = "/tmp/spm/controller.sock"
 
 type Controller struct {
-	procs []Proc
+	procs    []Proc
+	procMap  map[net.Conn]Proc
 	listener net.Listener
 }
 
 type Proc struct {
-	Pid int
+	Pid  int
 	Conn net.Conn
 	// TODO: Implement Proc struct
 }
@@ -50,16 +52,22 @@ func (c *Controller) ProcList() *[]Proc {
 	return &c.procs
 }
 
-func (c *Controller) Start() {
+func (c *Controller) Start() error {
+	c.procMap = make(map[net.Conn]Proc)
+
 	var err error
 	var conn net.Conn
 	for err == nil {
 		conn, err = c.listener.Accept()
 		err = c.AcceptConnection(conn)
 	}
+
+	return err
 }
 
 func (c *Controller) AcceptConnection(conn net.Conn) error {
+	var proc Proc
+
 	rd := bufio.NewReader(conn)
 	var err error
 	var input string
@@ -77,8 +85,13 @@ func (c *Controller) AcceptConnection(conn net.Conn) error {
 				// should return error
 				continue
 			}
-			c.procs = append(c.procs, Proc{pid, conn})
-			fmt.Printf("Process with pid %v registered itself", pid)
+			proc = Proc{pid, conn}
+			c.procs = append(c.procs, proc)
+			c.procMap[conn] = proc
+			fmt.Printf("Process with pid %v registered itself\n", pid)
+		case sock_api.TerminatedInfo:
+			fmt.Printf("Process with pid %v has terminated\n", proc.Pid)
+			delete(c.procMap, conn)
 		}
 	}
 

@@ -15,6 +15,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	fmt.Println("Starting process wrapper...")
+
 	wrapper, err := spm.NewWrapper(os.Args[1])
 	if err != nil {
 		panic(err)
@@ -42,8 +44,11 @@ func main() {
 	_, _ = conn.Write([]byte(fmt.Sprintf("/register %v\n", os.Getpid())))
 
 	// start go routines here
+	go wrapper.StartHeartbeat(conn)
 
 	if err = wrapper.Wait(); err != nil {
 		fmt.Printf("Exited with error %v\n", err)
 	}
+
+	fmt.Println("Exiting process wrapper")
 }

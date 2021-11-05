@@ -1,8 +1,13 @@
 package sock_api
 
-import "strings"
+import (
+	"strings"
+)
 
 func ParseInput(input string) Request {
+	// remove whitespace
+	input = strings.TrimSpace(input)
+	// split by space
 	inputSplit := strings.Split(input, " ")
 	if input[0] == '/' {
 		cmd := strings.ToLower(inputSplit[0])

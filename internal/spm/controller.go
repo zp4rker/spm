@@ -92,6 +92,10 @@ func (c *Controller) AcceptConnection(conn net.Conn) error {
 		case sock_api.TerminatedInfo:
 			fmt.Printf("Process with pid %v has terminated\n", proc.Pid)
 			delete(c.procMap, conn)
+		case sock_api.HeartbeatInfo:
+			fmt.Printf("Received heartbeat from process with pid %v\n", proc.Pid)
+		case sock_api.UnknownRequest:
+			fmt.Println("Received unknown request!")
 		}
 	}
 

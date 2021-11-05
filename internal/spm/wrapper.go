@@ -2,9 +2,12 @@ package spm
 
 import (
 	"errors"
-	"github.com/google/shlex"
 	"io"
+	"net"
 	"os/exec"
+	"time"
+
+	"github.com/google/shlex"
 )
 
 func NewWrapper(cmdString string) (*Wrapper, error) {
@@ -37,8 +40,8 @@ func NewWrapper(cmdString string) (*Wrapper, error) {
 }
 
 type Wrapper struct {
-	cmd *exec.Cmd
-	stdin io.WriteCloser
+	cmd            *exec.Cmd
+	stdin          io.WriteCloser
 	stdout, stderr io.ReadCloser
 }
 
@@ -52,6 +55,13 @@ func (w *Wrapper) Start() error {
 
 func (w *Wrapper) Wait() error {
 	return w.cmd.Wait()
+}
+
+func (_ *Wrapper) StartHeartbeat(conn net.Conn) {
+	for {
+		_, _ = conn.Write([]byte("HEARTBEAT\n"))
+		time.Sleep(5 * time.Second)
+	}
 }
 
 func (w *Wrapper) WriteStdin(input string) error {

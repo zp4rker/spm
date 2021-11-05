@@ -13,3 +13,4 @@ spm-wrapper
 !spm-wrapper/
 
 pkg.sh
+test.sh

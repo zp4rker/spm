@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/zp4rker/jpm/internal/spm"
+	"github.com/zp4rker/spm/internal/spm"
 )
 
 func main() {

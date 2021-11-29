@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/zp4rker/jpm/internal/spm"
+	"github.com/zp4rker/spm/internal/spm"
 )
 
 func main() {

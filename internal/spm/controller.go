@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/zp4rker/jpm/internal/spm/sock_api"
+	"github.com/zp4rker/spm/internal/spm/sock_api"
 )
 
 const SockAddr = "/tmp/spm/controller.sock"

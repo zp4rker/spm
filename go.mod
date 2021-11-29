@@ -1,4 +1,4 @@
-module github.com/zp4rker/jpm
+module github.com/zp4rker/spm
 
 go 1.17
 

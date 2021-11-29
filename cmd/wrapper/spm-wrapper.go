@@ -27,11 +27,13 @@ func main() {
 	}
 
 	go func() {
-		sigchan := make(chan os.Signal)
-		signal.Notify(sigchan, spm.SIGRQFB)
+		for {
+			sigchan := make(chan os.Signal, 1)
+			signal.Notify(sigchan, spm.SIGRQFB)
 
-		for range sigchan {
-			fmt.Println("Recieved SIGRQFB")
+			for range sigchan {
+				fmt.Println("Recieved SIGRQFB")
+			}
 		}
 	}()
 
@@ -44,7 +46,7 @@ func main() {
 	_, _ = conn.Write([]byte(fmt.Sprintf("/register %v\n", os.Getpid())))
 
 	// start go routines here
-	go wrapper.StartHeartbeat(conn)
+	go spm.StartHeartbeat(conn)
 
 	if err = wrapper.Wait(); err != nil {
 		fmt.Printf("Exited with error %v\n", err)

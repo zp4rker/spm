@@ -58,7 +58,7 @@ func (c *Controller) Start() error {
 	var err error
 	var conn net.Conn
 	for err == nil {
-		conn, err = c.listener.Accept()
+		conn, _ = c.listener.Accept()
 		err = c.AcceptConnection(conn)
 	}
 

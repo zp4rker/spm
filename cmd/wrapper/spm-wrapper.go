@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/zp4rker/jpm/internal/wrapper"
+	"net"
 	"os"
 	"os/signal"
-	"syscall"
+
+	"github.com/zp4rker/jpm/internal/spm"
 )
 
 func main() {
@@ -14,24 +15,40 @@ func main() {
 		os.Exit(1)
 	}
 
-	proc, err := wrapper.NewWrapper(os.Args[1])
+	fmt.Println("Starting process wrapper...")
+
+	wrapper, err := spm.NewWrapper(os.Args[1])
 	if err != nil {
 		panic(err)
 	}
 
-	sigchan := make(chan os.Signal)
-	signal.Notify(sigchan, syscall.Signal(0x1f))
+	if err = wrapper.Start(); err != nil {
+		panic(err)
+	}
 
 	go func() {
+		sigchan := make(chan os.Signal)
+		signal.Notify(sigchan, spm.SIGRQFB)
+
 		for range sigchan {
-			fmt.Println("Recieved Signal(0x1f)")
+			fmt.Println("Recieved SIGRQFB")
 		}
 	}()
 
-	// start go routines here
-
-	err = proc.Run()
+	conn, err := net.Dial("unix", spm.SockAddr)
 	if err != nil {
-		panic(err)
+		return
 	}
+	defer conn.Write([]byte("TERMINATED\n"))
+
+	_, _ = conn.Write([]byte(fmt.Sprintf("/register %v\n", os.Getpid())))
+
+	// start go routines here
+	go wrapper.StartHeartbeat(conn)
+
+	if err = wrapper.Wait(); err != nil {
+		fmt.Printf("Exited with error %v\n", err)
+	}
+
+	fmt.Println("Exiting process wrapper")
 }

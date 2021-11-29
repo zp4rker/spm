@@ -1,10 +1,13 @@
-package wrapper
+package spm
 
 import (
 	"errors"
-	"github.com/google/shlex"
 	"io"
+	"net"
 	"os/exec"
+	"time"
+
+	"github.com/google/shlex"
 )
 
 func NewWrapper(cmdString string) (*Wrapper, error) {
@@ -37,22 +40,37 @@ func NewWrapper(cmdString string) (*Wrapper, error) {
 }
 
 type Wrapper struct {
-	cmd *exec.Cmd
-	stdin io.WriteCloser
+	cmd            *exec.Cmd
+	stdin          io.WriteCloser
 	stdout, stderr io.ReadCloser
 }
 
-func (wrapper *Wrapper) Run() error {
-	return wrapper.cmd.Run()
+func (w *Wrapper) Run() error {
+	return w.cmd.Run()
 }
 
-func (wrapper *Wrapper) WriteStdin(input string) error {
-	_, err := wrapper.stdin.Write([]byte(input))
+func (w *Wrapper) Start() error {
+	return w.cmd.Start()
+}
+
+func (w *Wrapper) Wait() error {
+	return w.cmd.Wait()
+}
+
+func (_ *Wrapper) StartHeartbeat(conn net.Conn) {
+	for {
+		_, _ = conn.Write([]byte("HEARTBEAT\n"))
+		time.Sleep(5 * time.Second)
+	}
+}
+
+func (w *Wrapper) WriteStdin(input string) error {
+	_, err := w.stdin.Write([]byte(input))
 	return err
 }
 
-func (wrapper *Wrapper) ReadStdout() (string, error) {
-	bytes, err := io.ReadAll(wrapper.stdout)
+func (w *Wrapper) ReadStdout() (string, error) {
+	bytes, err := io.ReadAll(w.stdout)
 	if err != nil {
 		return "", nil
 	}
@@ -60,8 +78,8 @@ func (wrapper *Wrapper) ReadStdout() (string, error) {
 	return string(bytes), nil
 }
 
-func (wrapper *Wrapper) ReadSterr() (string, error) {
-	bytes, err := io.ReadAll(wrapper.stderr)
+func (w *Wrapper) ReadSterr() (string, error) {
+	bytes, err := io.ReadAll(w.stderr)
 	if err != nil {
 		return "", nil
 	}

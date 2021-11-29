@@ -57,7 +57,7 @@ func (w *Wrapper) Wait() error {
 	return w.cmd.Wait()
 }
 
-func (_ *Wrapper) StartHeartbeat(conn net.Conn) {
+func StartHeartbeat(conn net.Conn) {
 	for {
 		_, _ = conn.Write([]byte("HEARTBEAT\n"))
 		time.Sleep(5 * time.Second)

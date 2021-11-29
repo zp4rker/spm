@@ -1,8 +1,9 @@
 package spm
 
 import (
-	"github.com/google/shlex"
 	"os/exec"
+
+	"github.com/google/shlex"
 )
 
 func CmdFromString(cmdString string) (*exec.Cmd, error) {

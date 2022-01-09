@@ -12,5 +12,4 @@ spm-wrapper
 !spm-controller/
 !spm-wrapper/
 
-pkg.sh
 test.sh
